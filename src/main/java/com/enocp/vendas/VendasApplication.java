@@ -30,6 +30,8 @@ public class VendasApplication {
 				clientes.atualizar(c);
 			});
 
+
+
 			todosClientes = clientes.obterTodos();
 			todosClientes.forEach(System.out::println);
 
