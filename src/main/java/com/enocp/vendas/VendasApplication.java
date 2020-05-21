@@ -35,9 +35,11 @@ public class VendasApplication {
 
 			pedidos.save(p);
 
-			Cliente cliente = clientes.findClienteFetchPedidos(pierre.getId());
-			System.out.println(cliente);
-			System.out.println(cliente.getPedidos());
+			//Cliente cliente = clientes.findClienteFetchPedidos(pierre.getId());
+			//System.out.println(cliente);
+			//System.out.println(cliente.getPedidos());
+
+			pedidos.findByCliente(pierre).forEach(System.out::println);
 
 		};
 	}
