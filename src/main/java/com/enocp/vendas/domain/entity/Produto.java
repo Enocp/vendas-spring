@@ -9,6 +9,12 @@ import java.math.BigDecimal;
 @Table(name = "produto")
 public class Produto {
 
+    public Produto(Integer id, String descricao, BigDecimal preco) {
+        this.id = id;
+        this.descricao = descricao;
+        this.preco = preco;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -19,6 +25,8 @@ public class Produto {
 
     @Column(name = "preco_unitario")
     private BigDecimal preco;
+
+
 
     public Integer getId() {
         return id;
@@ -42,5 +50,14 @@ public class Produto {
 
     public void setPreco(BigDecimal preco) {
         this.preco = preco;
+    }
+
+    @Override
+    public String toString() {
+        return "Produto{" +
+                "id=" + id +
+                ", descricao='" + descricao + '\'' +
+                ", preco=" + preco +
+                '}';
     }
 }
