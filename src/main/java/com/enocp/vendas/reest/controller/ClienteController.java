@@ -3,11 +3,14 @@ package com.enocp.vendas.reest.controller;
 import ch.qos.logback.core.net.server.Client;
 import com.enocp.vendas.domain.entity.Cliente;
 import com.enocp.vendas.domain.repository.Clientes;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -64,5 +67,18 @@ public class ClienteController {
                     return  ResponseEntity.noContent().build();
                 }).orElseGet( () -> ResponseEntity.notFound().build() );
     }
+
+    @GetMapping("/api/clientes")
+    public  ResponseEntity find( Cliente filtro ){
+        ExampleMatcher matcher = ExampleMatcher
+                                    .matching()
+                                    .withIgnoreCase()
+                                    .withStringMatcher(
+                                            ExampleMatcher.StringMatcher.CONTAINING );
+        Example exammple = Example.of(filtro, matcher);
+        List<Cliente> lista = clientes.findAll(exammple);
+        return ResponseEntity.ok(lista);
+    }
+
 }
 
