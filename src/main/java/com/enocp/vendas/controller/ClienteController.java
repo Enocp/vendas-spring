@@ -1,4 +1,4 @@
-package com.enocp.vendas.reest.controller;
+package com.enocp.vendas.controller;
 
 import com.enocp.vendas.domain.entity.Cliente;
 import com.enocp.vendas.domain.repository.Clientes;
