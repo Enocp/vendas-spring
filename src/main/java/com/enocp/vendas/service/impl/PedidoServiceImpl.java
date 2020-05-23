@@ -4,6 +4,7 @@ import com.enocp.vendas.domain.entity.Cliente;
 import com.enocp.vendas.domain.entity.ItemPedido;
 import com.enocp.vendas.domain.entity.Pedido;
 import com.enocp.vendas.domain.entity.Produto;
+import com.enocp.vendas.domain.enums.StatusPedido;
 import com.enocp.vendas.domain.repository.Clientes;
 import com.enocp.vendas.domain.repository.ItemsPedido;
 import com.enocp.vendas.domain.repository.Pedidos;
@@ -44,6 +45,7 @@ public class PedidoServiceImpl  implements PedidoService {
         pedido.setTotal(dto.getTotal());
         pedido.setDataPedido(LocalDate.now());
         pedido.setCliente(cliente);
+        pedido.setStatus(StatusPedido.REALIZAADO);
 
         List<ItemPedido> itemsPedido = converterItems(pedido, dto.getItems());
         repository.save(pedido);
