@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,41 +34,51 @@ public class PedidoServiceImpl  implements PedidoService {
 
     @Override
     @Transactional
-    public Pedido salvar(PedidoDTO dto) {
-       Integer idCliente = dto.getCliente();
-       Cliente cliente = clientesRepository
-               .findById(idCliente)
-               .orElseThrow( () -> new RegraNegocioException("Codigo de cliente invalido."));
-        Pedido pedido= new Pedido();
+     public Pedido salvar( PedidoDTO dto ) {
+        Integer idCliente = dto.getCliente();
+        Cliente cliente = clientesRepository
+                .findById(idCliente)
+                .orElseThrow(() -> new RegraNegocioException("Código de cliente inválido."));
+
+        Pedido pedido = new Pedido();
         pedido.setTotal(dto.getTotal());
         pedido.setDataPedido(LocalDate.now());
         pedido.setCliente(cliente);
 
-        List<ItemPedido> itemPedidos = converterItems(pedido,dto.getItems());
+        List<ItemPedido> itemsPedido = converterItems(pedido, dto.getItems());
         repository.save(pedido);
-        itemPedidos.containsAll(itemPedidos);
-        pedido.setItens(itemPedidos);
+        itemsPedidoRepository.saveAll(itemsPedido);
+        pedido.setItens(itemsPedido);
         return pedido;
     }
 
-    private List <ItemPedido> converterItems (Pedido pedido, List<ItemPedidoDTO> items){
+    @Override
+    public Optional<Pedido> obterPedidoCompleto(Integer id) {
+
+        return repository.findByIdFetchItems(id);
+    }
+    private List<ItemPedido> converterItems(Pedido pedido, List<ItemPedidoDTO> items){
         if(items.isEmpty()){
-            throw new RegraNegocioException("Não è possivel realizar um pedido sem items.");
+            throw new RegraNegocioException("Não é possível realizar um pedido sem items.");
         }
+
+
         return items
                 .stream()
                 .map( dto -> {
-                   Integer idProduto = dto.getProduto();
-                  Produto produto = produtosRepository
-                           .findById(idProduto)
-                           .orElseThrow( () -> new RegraNegocioException("Codigo de produto invalido: " + idProduto
-                           ));
+                    Integer idProduto = dto.getProduto();
+                    Produto produto = produtosRepository
+                            .findById(idProduto)
+                            .orElseThrow(
+                                    () -> new RegraNegocioException(
+                                            "Código de produto inválido: "+ idProduto
+                                    ));
 
-                   ItemPedido itemPedido= new ItemPedido();
-                   itemPedido.setQuantidade(dto.getQuantidade());
-                   itemPedido.setPedido(pedido);
-                   itemPedido.setProdudo(produto);
-                   return itemPedido;
+                    ItemPedido itemPedido = new ItemPedido();
+                    itemPedido.setQuantidade(dto.getQuantidade());
+                    itemPedido.setPedido(pedido);
+                    itemPedido.setProduto(produto);
+                    return itemPedido;
                 }).collect(Collectors.toList());
 
     }
