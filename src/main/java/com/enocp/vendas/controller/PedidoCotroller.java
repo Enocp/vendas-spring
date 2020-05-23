@@ -2,6 +2,8 @@ package com.enocp.vendas.controller;
 
 import com.enocp.vendas.domain.entity.ItemPedido;
 import com.enocp.vendas.domain.entity.Pedido;
+import com.enocp.vendas.domain.enums.StatusPedido;
+import com.enocp.vendas.rest.dto.AtualizacaoStatusPedidoDTO;
 import com.enocp.vendas.rest.dto.InformacaoItemPedidoDTO;
 import com.enocp.vendas.rest.dto.InformacoesPedidoDTO;
 import com.enocp.vendas.rest.dto.PedidoDTO;
@@ -44,6 +46,15 @@ public class PedidoCotroller {
                 .map( p -> converter(p))
                 .orElseThrow( ()->
                         new ResponseStatusException(NOT_FOUND, "Pedido não encontrado"));
+    }
+
+    @PatchMapping("{id}")
+    @ResponseStatus(NO_CONTENT)
+    public void updateStatus(@PathVariable Integer id,
+                             @RequestBody AtualizacaoStatusPedidoDTO dto) {
+                String novoStatus = dto.getNovoStatus();
+                service.atualizaStatus(id, StatusPedido.valueOf(novoStatus));
+
     }
 
     private InformacoesPedidoDTO converter(Pedido pedido){

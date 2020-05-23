@@ -9,6 +9,7 @@ import com.enocp.vendas.domain.repository.Clientes;
 import com.enocp.vendas.domain.repository.ItemsPedido;
 import com.enocp.vendas.domain.repository.Pedidos;
 import com.enocp.vendas.domain.repository.Produtos;
+import com.enocp.vendas.exception.PedidoNaoEncontradooException;
 import com.enocp.vendas.exception.RegraNegocioException;
 import com.enocp.vendas.rest.dto.ItemPedidoDTO;
 import com.enocp.vendas.rest.dto.PedidoDTO;
@@ -59,6 +60,18 @@ public class PedidoServiceImpl  implements PedidoService {
 
         return repository.findByIdFetchItems(id);
     }
+
+    @Override
+    @Transactional
+    public void atualizaStatus(Integer id, StatusPedido statusPedido) {
+        repository
+                .findById(id)
+                .map(pedido -> {
+                    pedido.setStatus(statusPedido);
+                    return repository.save(pedido);
+                }).orElseThrow(() -> new PedidoNaoEncontradooException() );
+    }
+
     private List<ItemPedido> converterItems(Pedido pedido, List<ItemPedidoDTO> items){
         if(items.isEmpty()){
             throw new RegraNegocioException("Não é possível realizar um pedido sem items.");
