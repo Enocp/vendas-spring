@@ -28,7 +28,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
+            http
+                .cors().disable()
+                .authorizeRequests()
+                .antMatchers("/api/clientes/***")
+                .authenticated()
+                .and()
+                .formLogin();
+               // .hasAuthority("MANTER USUARIO")
+        /*
+        .formLongin("/menu-login.html")
+        * <form method="post">
+         <input type="text" name ="user">
+         * <input type="name="password">
+         <button type="submit">
+         * </form>
+        * */
+
     }
 
 }
