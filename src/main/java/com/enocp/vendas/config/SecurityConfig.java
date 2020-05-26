@@ -23,7 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder())
                 .withUser("pierre")
                 .password(passwordEncoder().encode("123"))
-                .roles("USER");
+                .roles("USER","ADMIN");
     }
 
     @Override
@@ -31,20 +31,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             http
                 .cors().disable()
                 .authorizeRequests()
-                .antMatchers("/api/clientes/***")
-                .authenticated()
-                .and()
-                .formLogin();
-               // .hasAuthority("MANTER USUARIO")
-        /*
-        .formLongin("/menu-login.html")
-        * <form method="post">
-         <input type="text" name ="user">
-         * <input type="name="password">
-         <button type="submit">
-         * </form>
-        * */
-
+                  .antMatchers("/api/clientes/**")
+                    .hasAnyRole("USER","ADMIN")
+                 .antMatchers("/api/pedidos/**")
+                    .hasAnyRole("USER","ADMIN")
+                 .antMatchers("/api/produtos/**")
+                    .hasRole("ADMIN")
+                  .and()
+                    .formLogin();
     }
 
 }
